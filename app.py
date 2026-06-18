@@ -8,6 +8,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from ui_standings import load_standings, render_standings_dashboard
+from ui_theme import inject_wc_styles, render_wc_hero
 from ui_zh import (
     ALIGNMENT_ZH,
     DRAW_RULE_ZH,
@@ -22,34 +24,6 @@ from ui_zh import (
 )
 
 DATA_PATH = Path(__file__).resolve().parent / "matches.json"
-
-MOBILE_CSS = """
-<style>
-  .block-container { padding-top: 1.2rem; padding-bottom: 2rem; max-width: 920px; }
-  [data-testid="stMetricValue"] { font-size: 1.35rem; }
-  .pick-hero {
-    background: linear-gradient(135deg, #1a2332 0%, #121a2b 100%);
-    border: 1px solid #243049;
-    border-radius: 14px;
-    padding: 1rem 1.15rem;
-    margin-bottom: 0.75rem;
-  }
-  .pick-hero .title { color: #8b9bb8; font-size: 0.82rem; margin-bottom: 0.25rem; }
-  .pick-hero .main { color: #00c896; font-size: 1.55rem; font-weight: 700; }
-  .pick-hero .sub { color: #c5d0e6; font-size: 0.92rem; margin-top: 0.35rem; }
-  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0.2rem; }
-  .tag {
-    font-size: 0.75rem; padding: 0.15rem 0.55rem; border-radius: 999px;
-    border: 1px solid #243049; background: #ffffff08; color: #8b9bb8;
-  }
-  .tag.ok { color: #00c896; border-color: #00c89655; }
-  .tag.warn { color: #f59e0b; border-color: #f59e0b55; }
-  .tag.bad { color: #ef4444; border-color: #ef444455; }
-  @media (max-width: 640px) {
-    [data-testid="column"] { width: 100% !important; flex: 1 1 100% !important; min-width: 100% !important; }
-  }
-</style>
-"""
 
 
 @st.cache_data
@@ -66,7 +40,36 @@ def match_label(match: dict) -> str:
 
 
 def inject_styles() -> None:
-    st.markdown(MOBILE_CSS, unsafe_allow_html=True)
+    inject_wc_styles()
+
+
+def match_groups(data: dict) -> list[str]:
+    groups = sorted({m["group"] for m in data.get("matches", [])})
+    return groups
+
+
+def render_home_hero(data: dict) -> None:
+    standings = load_standings()
+    meta = standings.get("meta") or {}
+    md1 = data.get("md1_total") or {}
+    md2 = data.get("md2_preview") or {}
+    pills = [
+        ("已赛", f"{meta.get('results_count', md1.get('matches_played', '—'))} 场"),
+        ("轮次", f"第 {meta.get('matchday', '—')} 轮"),
+        ("本批", f"{len(data.get('matches', []))} 场预测"),
+    ]
+    if md2.get("kickoff"):
+        pills.append(("焦点", f"{md2['kickoff']} A/B 组"))
+    if md1.get("md1_backtest_1x2"):
+        pills.append(("首轮回测", f"胜负 {md1['md1_backtest_1x2']}"))
+    subtitle = data.get("batch_label") or f"数据更新于 {data.get('generated', '—')}"
+    if md2.get("note"):
+        subtitle = f"{subtitle} · {md2['note']}"
+    render_wc_hero(
+        title="2026 美加墨世界杯 · 小组赛预测看板",
+        subtitle=subtitle,
+        pills=pills,
+    )
 
 
 def render_pick_hero(match: dict) -> None:
@@ -256,15 +259,21 @@ def render_post_match(match: dict) -> None:
         st.caption(f"赛后实力指数：{h} {elo['home']} · {a} {elo['away']}")
 
 
-def render_overview_table(data: dict) -> None:
+def render_overview_table(data: dict, *, upcoming_only: bool = False, played_only: bool = False) -> None:
     rows = []
     for m in data["matches"]:
+        if upcoming_only and m.get("actual"):
+            continue
+        if played_only and not m.get("actual"):
+            continue
         rec = m["recommendation"]
         row = {
+            "轮次": m.get("stage_label", "小组赛"),
             "开球时间": m["kickoff"],
             "对阵": m["title"],
             "模型推荐": f"{rec['pick_1x2']} · {rec['pick_score']}",
             "庄家倾向": m["market_pick_zh"],
+            "与庄家": "一致" if m.get("alignment") == "high" else "分歧",
             "预期进球合计": round(m["score_analysis"]["total_xg"], 2),
         }
         if m.get("actual"):
@@ -272,8 +281,7 @@ def render_overview_table(data: dict) -> None:
             row["实际比分"] = m["actual"]["score"]
             row["胜负"] = "中" if pm.get("hit_1x2") else "偏"
             row["比分"] = "中" if pm.get("hit_score") else "偏"
-        else:
-            row["与庄家"] = "一致" if m.get("alignment") == "high" else "分歧"
+            row.pop("与庄家", None)
         rows.append(row)
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
@@ -418,43 +426,48 @@ def render_match_detail(match: dict) -> None:
 def main() -> None:
     st.set_page_config(
         page_title="世界杯小组赛预测看板",
-        page_icon="⚽",
+        page_icon="🏆",
         layout="wide",
         initial_sidebar_state="expanded",
     )
     inject_styles()
     data = load_data()
-
-    st.title("2026 世界杯 · 小组赛预测看板")
-    st.markdown(f"**{zh_model_label(data.get('model', ''))}** · 数据更新于 {data.get('generated', '—')}")
-    md1 = data.get("md1_total") or {}
-    if md1:
-        st.caption(
-            f"小组赛首轮已赛 {md1.get('matches_played', '—')} 场 · "
-            f"模型回测胜负 {md1.get('md1_backtest_1x2', '—')} · "
-            f"比分 {md1.get('md1_backtest_score', '—')}"
-        )
+    highlight = match_groups(data)
 
     labels = [match_label(m) for m in data["matches"]]
     by_label = {match_label(m): m for m in data["matches"]}
 
     with st.sidebar:
-        st.header("导航")
-        view = st.radio("视图", ["赛程总览", "单场详解", "赛后复盘"], label_visibility="collapsed")
+        st.header("🏆 导航")
+        view = st.radio(
+            "视图",
+            ["赛程总览", "积分榜出线", "单场详解", "赛后复盘"],
+            label_visibility="collapsed",
+        )
         selected = st.selectbox("选择比赛", labels, format_func=lambda x: f"{x} · {by_label[x]['title']}")
         st.session_state["wide_charts"] = st.toggle("宽屏并排图表", value=True)
         st.divider()
         st.caption("本看板仅供研究参考，不构成任何投注建议。")
 
+    render_home_hero(data)
+
     if view == "赛程总览":
+        render_standings_dashboard(highlight_groups=highlight)
+        st.divider()
         render_summary_metrics(data)
-        st.subheader("全部场次")
-        render_overview_table(data)
+        st.subheader("6/19 第二轮 · A/B 组（赛前预测）")
+        render_overview_table(data, upcoming_only=True)
+        st.divider()
+        st.subheader("6/18 K/L 组 · 赛后复盘")
+        render_overview_table(data, played_only=True)
         st.divider()
         st.subheader("展开查看单场完整解读")
         for m in data["matches"]:
             with st.expander(f"{m['kickoff']} · {m['title']}", expanded=(match_label(m) == selected)):
                 render_match_detail(m)
+
+    elif view == "积分榜出线":
+        render_standings_dashboard(highlight_groups=highlight, show_all=True)
 
     elif view == "赛后复盘":
         render_summary_metrics(data)
