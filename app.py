@@ -12,6 +12,7 @@ from ui_zh import (
     ALIGNMENT_ZH,
     DRAW_RULE_ZH,
     GOALS_TENDENCY_ZH,
+    zh_injury_bundle,
     zh_insights,
     zh_model_label,
     zh_reason,
@@ -90,6 +91,12 @@ def render_pick_hero(match: dict) -> None:
         rule = DRAW_RULE_ZH.get(match.get("draw_pick_rule", ""), "平局专项规则")
         tags.append(("平局覆盖推荐", "warn"))
         tags.append((rule, "warn"))
+    inj = match.get("injuries") or {}
+    if inj.get("home", {}).get("players") or inj.get("away", {}).get("players"):
+        tags.append(("有伤停情报", ""))
+    net = inj.get("net_impact")
+    if net is not None and abs(net) >= 0.1:
+        tags.append((f"伤病差 {inj.get('net_label', '')}", "warn"))
     for note in match.get("score_analysis", {}).get("calibration_notes") or []:
         tags.append((zh_text(note), ""))
     if tags:
@@ -271,6 +278,39 @@ def render_overview_table(data: dict) -> None:
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 
+def render_injuries(match: dict) -> None:
+    inj = match.get("injuries")
+    if not inj:
+        st.info("暂无结构化伤停情报。导出数据时请运行 export_data.py 以同步最新伤病库。")
+        return
+
+    if inj.get("requires_search"):
+        st.warning("部分球队伤停情报可能过期，赛前建议重新检索确认。")
+
+    net = inj.get("net_impact", 0)
+    st.markdown(
+        f"**净伤病影响** {net:+.2f}（{inj.get('net_label', '—')}）  \n"
+        "数值为主队减客队的伤病特征；负值表示客队相对更完整。"
+    )
+
+    left, right = st.columns(2)
+    for col, side_key in ((left, "home"), (right, "away")):
+        side = inj[side_key]
+        with col:
+            st.markdown(f"#### {side['display']}")
+            st.caption(f"更新于 {side.get('updated_at') or '—'} · {side.get('impact_label', '')}")
+            if side.get("impact", 0) != 0:
+                st.metric("伤病影响系数", f"{side['impact']:+.2f}")
+            st.write(side.get("summary", "暂无摘要"))
+            if side.get("rotation"):
+                st.warning(f"轮换/用人：{side['rotation']}")
+            for p in side.get("players") or []:
+                note = f" — {p['note']}" if p.get("note") else ""
+                st.markdown(f"- **{p['name']}** · {p['status']} · {p['role']}{note}")
+            if not side.get("players"):
+                st.caption("无具体球员条目")
+
+
 def render_match_detail(match: dict) -> None:
     rec = match["recommendation"]
     res = match["result_analysis"]
@@ -316,7 +356,9 @@ def render_match_detail(match: dict) -> None:
     o3.metric("客胜赔率", odds["away"])
 
     st.subheader("详细解读")
-    tab1, tab2, tab3, tab4 = st.tabs(["胜负依据", "比分依据", "双方情报", "备战与战意"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+        ["胜负依据", "比分依据", "伤停情报", "双方情报", "备战与战意"]
+    )
 
     with tab1:
         st.markdown("**胜平负概率排序**")
@@ -330,6 +372,13 @@ def render_match_detail(match: dict) -> None:
             st.markdown(f"**{r['factor']}** · 权重{r['weight']}{fav_note}  \n{r['detail']}")
 
     with tab2:
+        ge = sc.get("goal_environment") or {}
+        if ge.get("active"):
+            st.info(
+                f"**本届大球环境（P6）**：已赛 {ge.get('n', '—')} 场，场均 {ge.get('avg_goals', '—')} 球，"
+                f"相对历史首轮基准抬升系数 **{ge.get('lift', 1):.2f}**。"
+                "单边碾压局优先零封比分，对局型热门场厚尾分布略放宽。"
+            )
         alt = sc.get("raw_top_score")
         if alt and alt != sc.get("primary_score"):
             st.caption(f"进球模型原始最高比分 {alt}，经校准后主推 {sc.get('primary_score', rec['pick_score'])}。")
@@ -346,6 +395,9 @@ def render_match_detail(match: dict) -> None:
                 st.markdown(f"- {zh_text(n)}")
 
     with tab3:
+        render_injuries(match)
+
+    with tab4:
         for side_key, title in (("home", "主队"), ("away", "客队")):
             t = match["team_analysis"][side_key]
             with st.expander(f"{title}：{t['display']}", expanded=True):
@@ -358,7 +410,7 @@ def render_match_detail(match: dict) -> None:
                 for note in zh_team_notes(t.get("notes", [])[:8]):
                     st.write(f"- {note}")
 
-    with tab4:
+    with tab5:
         prep = match.get("prep_text") or "暂无备战周期文字分析。"
         st.markdown(zh_text(prep))
 
