@@ -82,6 +82,7 @@ def zh_text(text: str) -> str:
         (r"\bP3\b", "中等热门校准"),
         (r"\bP4\b", "比分对齐"),
         (r"\bP5\b", "大比分尾部"),
+        (r"\bP6\b", "大球环境"),
         (r"\bNB\b", "厚尾分布"),
         (r"主推", "推荐"),
         (r"纸面", "纸面"),
@@ -105,8 +106,8 @@ def zh_text(text: str) -> str:
 def zh_model_label(raw: str) -> str:
     mapping = {
         "v4.9.0-v4-p5-score-tails": "机器学习模型 4.9（含大比分尾部校准）",
-        "v4.8.0-v4-p4-score-calibrated": "机器学习模型 4.8（含比分对齐校准）",
-        "v4.4 + Poisson goal_model": "机器学习模型 4.4 + 泊松进球模型",
+        "4.10.0-v4-p6-goal-environment": "机器学习模型 4.10（含大球环境校准）",
+        "4.9.0-v4-p5-score-tails": "机器学习模型 4.9（含大比分尾部校准）",
         "机器学习模型 4.9 + 泊松进球模型": "机器学习模型 4.9（含大比分尾部校准）",
     }
     if raw in mapping:
@@ -143,3 +144,77 @@ def zh_team_notes(notes: list) -> list[str]:
 
 def zh_insights(lines: list) -> list[str]:
     return [zh_text(x) for x in lines]
+
+
+INJURY_STATUS_ZH = {
+    "out": "缺阵",
+    "doubtful": "出战存疑",
+    "suspended": "停赛",
+    "fit": "可出战",
+    "returning": "伤愈复出",
+}
+
+INJURY_ROLE_ZH = {
+    "key": "核心球员",
+    "attack": "进攻球员",
+    "defense": "防守球员",
+    "rotation": "轮换球员",
+}
+
+NOTE_ZH = {
+    "Achilles": "跟腱伤",
+    "achilles": "跟腱伤",
+}
+
+
+def zh_injury_note(note: str) -> str:
+    s = zh_text(note or "")
+    for en, zh in NOTE_ZH.items():
+        s = s.replace(en, zh)
+    return s
+
+
+def _impact_label(net: float) -> str:
+    if net > 0.08:
+        return "主队阵容更完整"
+    if net < -0.08:
+        return "客队阵容更完整"
+    return "双方伤病影响接近"
+
+
+def zh_injury_side(side: dict, display: str) -> dict:
+    players = []
+    for p in side.get("players") or []:
+        status = (p.get("status") or "fit").lower()
+        role = (p.get("role") or "rotation").lower()
+        players.append({
+            "name": p.get("name", "—"),
+            "status": INJURY_STATUS_ZH.get(status, status),
+            "role": INJURY_ROLE_ZH.get(role, role),
+            "note": zh_injury_note(p.get("note", "")),
+        })
+    impact = float(side.get("injury_impact", 0))
+    return {
+        "display": display,
+        "summary": zh_text(side.get("summary", "暂无情报")),
+        "impact": impact,
+        "impact_label": "阵容受损" if impact < -0.05 else ("阵容齐整" if impact >= 0 else "轻微影响"),
+        "rotation": zh_text(side.get("rotation_rumor") or ""),
+        "updated_at": side.get("updated_at", ""),
+        "players": players,
+    }
+
+
+def zh_injury_bundle(bundle: dict, home_display: str, away_display: str) -> dict:
+    if not bundle:
+        return {}
+    net = float(bundle.get("net_injury_feature", 0))
+    home = zh_injury_side(bundle.get("home") or {}, home_display)
+    away = zh_injury_side(bundle.get("away") or {}, away_display)
+    return {
+        "net_impact": net,
+        "net_label": _impact_label(net),
+        "requires_search": bool(bundle.get("requires_search")),
+        "home": home,
+        "away": away,
+    }
