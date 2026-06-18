@@ -1,6 +1,6 @@
 {
   "generated": "2026-06-18",
-  "model": "v4.4 + Poisson goal_model",
+  "model": "机器学习模型 4.9 + 泊松进球模型",
   "matches": [
     {
       "id": 1,
@@ -21,12 +21,14 @@
       },
       "market_pick_zh": "主胜",
       "alignment": "high",
+      "draw_pick_applied": false,
+      "draw_pick_rule": null,
       "recommendation": {
         "pick_1x2": "主胜",
         "pick_1x2_prob": 0.7787,
-        "pick_score": "2-0",
-        "pick_score_prob": 0.133468,
-        "summary": "主推 主胜（77.9%），比分 2-0（Poisson 13.3%）；偏大球（xG合计 3.48）"
+        "pick_score": "3-1",
+        "pick_score_prob": 0.044484,
+        "summary": "推荐 主胜（77.9%），比分 3-1（进球模型 4.4%）；偏大球（预期进球合计 3.25）"
       },
       "result_analysis": {
         "probabilities": {
@@ -53,9 +55,15 @@
         "reasons": [
           {
             "factor": "Elo 纸面",
-            "detail": "🇵🇹葡萄牙 领先 410 分，历史赛果统计上明显占优",
+            "detail": "🇵🇹葡萄牙 领先 360 分，历史赛果统计上明显占优",
             "weight": "高",
             "favors": "home"
+          },
+          {
+            "factor": "伤病差",
+            "detail": "injury_impact=-0.08（客队阵容更完整）",
+            "weight": "中",
+            "favors": "away"
           },
           {
             "factor": "世预赛防守韧劲",
@@ -65,10 +73,10 @@
           }
         ],
         "feature_snapshot": {
-          "elo_diff": 410.0,
-          "attack_diff": 1.17,
-          "defense_diff": -1.17,
-          "injury_impact": 0.0,
+          "elo_diff": 360.0,
+          "attack_diff": 1.1075,
+          "defense_diff": -1.1075,
+          "injury_impact": -0.07500000000000001,
           "fatigue_index": 0.0,
           "market_implied_prob": 0.33,
           "tournament_stage": 0.5,
@@ -79,23 +87,23 @@
         }
       },
       "score_analysis": {
-        "primary_score": "2-0",
-        "primary_prob": 0.133468,
+        "primary_score": "3-1",
+        "primary_prob": 0.044484,
         "expected_goals": {
-          "home": 2.9355,
-          "away": 0.5423
+          "home": 2.6511,
+          "away": 0.6005
         },
         "xg_baseline_vs_adjusted": {
           "baseline": {
-            "home": 2.91,
-            "away": 0.547
+            "home": 2.628,
+            "away": 0.606
           },
           "adjusted": {
-            "home": 2.935,
-            "away": 0.542
+            "home": 2.651,
+            "away": 0.6
           },
           "delta": {
-            "home": 0.026,
+            "home": 0.023,
             "away": -0.005
           }
         },
@@ -104,51 +112,56 @@
         ],
         "top_scorelines": [
           {
-            "score": "2-0",
-            "prob": 0.133468
-          },
-          {
-            "score": "3-0",
-            "prob": 0.130598
-          },
-          {
-            "score": "4-0",
-            "prob": 0.095843
+            "score": "3-1",
+            "prob": 0.044484
           },
           {
             "score": "1-0",
-            "prob": 0.090934
+            "prob": 0.125117
           },
           {
-            "score": "2-1",
-            "prob": 0.072382
+            "score": "2-0",
+            "prob": 0.115615
+          },
+          {
+            "score": "0-0",
+            "prob": 0.091879
+          },
+          {
+            "score": "3-0",
+            "prob": 0.089966
           }
         ],
         "score_reasons": [
           {
             "factor": "实力差",
-            "detail": "🇵🇹葡萄牙 Elo 领先 410 分，Poisson 倾向其进球更多、对手进球更少",
-            "supports": "2-0"
+            "detail": "🇵🇹葡萄牙 Elo 领先 360 分，Poisson 倾向其进球更多、对手进球更少",
+            "supports": "3-1"
           },
           {
             "factor": "世预赛防守",
             "detail": "主队对本洲前三场均丢球更少，模型压低客队 λ、略抬主队 λ",
-            "supports": "2-0（主队零封或一球差概率上升）"
+            "supports": "3-1（主队零封或一球差概率上升）"
           },
           {
             "factor": "平局概率",
             "detail": "v4 平局概率 22.1%，Poisson 矩阵中平局比分合计权重不可忽视",
-            "supports": "1-1"
+            "supports": "0-0"
+          },
+          {
+            "factor": "1X2 对齐",
+            "detail": "主推比分与胜负推荐「主胜」一致",
+            "supports": "3-1"
           }
         ],
         "total_goals_tendency": "偏大球",
-        "total_xg": 3.48
+        "total_xg": 3.25
       },
       "team_analysis": {
         "home": {
           "team_id": "portugal",
           "display": "🇵🇹葡萄牙",
-          "elo": 1910,
+          "elo": 1885,
           "coach": "Roberto Martínez",
           "coach_style": "attacking",
           "coach_tags": [
@@ -170,16 +183,18 @@
           "strengths": [
             "热身赛阵型相对稳定"
           ],
-          "weaknesses": [],
+          "weaknesses": [
+            "伤病对即战力影响较大"
+          ],
           "notes": [
             "FIFA 排名 #6",
             "阵容身价约 €900m",
             "平均年龄 28.0",
             "世预赛对本洲前三场均丢球 1.0（防守中等）",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — K组尚未开赛，战意中性",
-            "出线路径：仍可能争前二（最高可达9分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场",
+            "伤病/停赛：鲁本·迪亚斯缺阵；C罗可出战状态存疑",
+            "本场战意：正常抢分 — 1分排名第3",
+            "出线路径：暂列最好第三第5位（1分 净+0）",
+            "小组现状 1 分 净胜球 +0 已赛 1 场",
             "历史最好名次约第 6 名"
           ],
           "tournament_record": null
@@ -187,7 +202,7 @@
         "away": {
           "team_id": "congo",
           "display": "🇨🇩刚果",
-          "elo": 1500,
+          "elo": 1525,
           "coach": "Sébastien Migné",
           "coach_style": "反击",
           "coach_tags": [
@@ -210,22 +225,47 @@
             "热身赛阵型相对稳定"
           ],
           "weaknesses": [
-            "面对本洲强队时防守偏弱"
+            "面对本洲强队时防守偏弱",
+            "伤病对即战力影响较大"
           ],
           "notes": [
             "FIFA 排名 #78",
             "阵容身价约 €55m",
             "平均年龄 27.0",
             "世预赛对本洲前三场均丢球 1.67（对强队防守偏弱）",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — K组尚未开赛，战意中性",
-            "出线路径：争夺小组前二（当前第2，0分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场"
+            "伤病/停赛：Bushiri伤退",
+            "本场战意：争小组头名 — 赢球可并列/反超榜首",
+            "出线路径：争夺小组前二（当前第2，1分）",
+            "小组现状 1 分 净胜球 +0 已赛 1 场"
           ],
           "tournament_record": null
         }
       },
-      "prep_text": "⚠️ 跨洲对决（UEFA vs CAF）：禁止对比世预赛场均进球。\n防守韧劲 — portugal: 对UEFA前三场均丢球 1.0 (防守中等)\n防守韧劲 — congo: 对CAF前三场均丢球 1.67 (对强队防守偏弱)\n\n热身赛（忽略比分，只看趋势）：\nportugal: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\ncongo: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nportugal: 揭幕阶段 — K组尚未开赛，战意中性\ncongo: 揭幕阶段 — K组尚未开赛，战意中性\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。"
+      "prep_text": "⚠️ 跨洲对决（UEFA vs CAF）：禁止对比世预赛场均进球。\n防守韧劲 — portugal: 对UEFA前三场均丢球 1.0 (防守中等)\n防守韧劲 — congo: 对CAF前三场均丢球 1.67 (对强队防守偏弱)\n\n热身赛（忽略比分，只看趋势）：\nportugal: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\ncongo: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nportugal: 正常抢分 — 1分排名第3\ncongo: 争小组头名 — 赢球可并列/反超榜首\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。",
+      "actual": {
+        "score": "1-1",
+        "outcome_zh": "平局",
+        "home_goals": 1,
+        "away_goals": 1,
+        "date": "2026-06-17"
+      },
+      "post_match": {
+        "hit_1x2": false,
+        "hit_score": false,
+        "model_pick": "主胜",
+        "model_score": "3-1",
+        "market_pick": "主胜",
+        "market_hit_1x2": false,
+        "insights": [
+          "模型高估葡萄牙统治力：刚果实际预期进球更高，维萨补时扳平",
+          "平局概率模型给出 22%，赛果为平局但未作为主推",
+          "庄家隐含平局仅 15%，本场为最大冷门"
+        ],
+        "elo_after": {
+          "home": 1885,
+          "away": 1525
+        }
+      }
     },
     {
       "id": 2,
@@ -246,41 +286,49 @@
       },
       "market_pick_zh": "主胜",
       "alignment": "split",
+      "draw_pick_applied": false,
+      "draw_pick_rule": null,
       "recommendation": {
         "pick_1x2": "客胜",
-        "pick_1x2_prob": 0.5502,
-        "pick_score": "1-1",
-        "pick_score_prob": 0.121015,
-        "summary": "主推 客胜（55.0%），比分 1-1（Poisson 12.1%）；中等进球（xG合计 2.59）"
+        "pick_1x2_prob": 0.5016,
+        "pick_score": "0-1",
+        "pick_score_prob": 0.077979,
+        "summary": "推荐 客胜（50.2%），比分 0-1（进球模型 7.8%）；中等进球（预期进球合计 2.65）"
       },
       "result_analysis": {
         "probabilities": {
-          "home_win": 0.4497,
-          "draw": 0.0001,
-          "away_win": 0.5502
+          "home_win": 0.3184,
+          "draw": 0.18,
+          "away_win": 0.5016
         },
         "pick": "客胜",
         "pick_key": "away",
         "ranked_outcomes": [
           {
             "outcome": "客胜",
-            "prob": 0.5502
+            "prob": 0.5016
           },
           {
             "outcome": "主胜",
-            "prob": 0.4497
+            "prob": 0.3184
           },
           {
             "outcome": "平局",
-            "prob": 0.0001
+            "prob": 0.18
           }
         ],
         "reasons": [
           {
             "factor": "Elo 纸面",
-            "detail": "Elo 差 +100，略倾向主队",
+            "detail": "Elo 差 +144，略倾向主队",
             "weight": "中",
             "favors": "home"
+          },
+          {
+            "factor": "伤病差",
+            "detail": "injury_impact=-0.30（客队阵容更完整）",
+            "weight": "中",
+            "favors": "away"
           },
           {
             "factor": "世预赛防守韧劲",
@@ -299,19 +347,13 @@
             "detail": "主队阵型波动更大",
             "weight": "中",
             "favors": "away"
-          },
-          {
-            "factor": "模型局限",
-            "detail": "v4 平局概率仅 0.0%，若双方保守僵持，实际赛果可能偏离主推",
-            "weight": "风险提示",
-            "favors": "draw"
           }
         ],
         "feature_snapshot": {
-          "elo_diff": 100.0,
+          "elo_diff": 144.0,
           "attack_diff": 0.18499999999999983,
           "defense_diff": -0.18499999999999983,
-          "injury_impact": 0.0,
+          "injury_impact": -0.3,
           "fatigue_index": 0.0,
           "market_implied_prob": 0.33,
           "tournament_stage": 0.5,
@@ -322,24 +364,24 @@
         }
       },
       "score_analysis": {
-        "primary_score": "1-1",
-        "primary_prob": 0.121015,
+        "primary_score": "0-1",
+        "primary_prob": 0.077979,
         "expected_goals": {
-          "home": 1.5473,
-          "away": 1.0474
+          "home": 1.6925,
+          "away": 0.9575
         },
         "xg_baseline_vs_adjusted": {
           "baseline": {
-            "home": 1.561,
-            "away": 1.038
+            "home": 1.707,
+            "away": 0.949
           },
           "adjusted": {
-            "home": 1.547,
-            "away": 1.047
+            "home": 1.692,
+            "away": 0.958
           },
           "delta": {
-            "home": -0.013,
-            "away": 0.009
+            "home": -0.015,
+            "away": 0.008
           }
         },
         "prep_impact_summary": [
@@ -347,46 +389,51 @@
         ],
         "top_scorelines": [
           {
-            "score": "1-1",
-            "prob": 0.121015
-          },
-          {
             "score": "1-0",
-            "prob": 0.115543
+            "prob": 0.122694
           },
           {
-            "score": "2-1",
-            "prob": 0.093624
+            "score": "1-1",
+            "prob": 0.098601
+          },
+          {
+            "score": "0-0",
+            "prob": 0.097033
           },
           {
             "score": "2-0",
-            "prob": 0.08939
+            "prob": 0.093085
           },
           {
             "score": "0-1",
-            "prob": 0.07821
+            "prob": 0.077979
           }
         ],
         "score_reasons": [
           {
             "factor": "世预赛防守",
             "detail": "客队防守韧劲更好，主队进球期望被压低",
-            "supports": "1-1"
+            "supports": "1-0"
           },
           {
             "factor": "热身轮换",
             "detail": "🏴英格兰 近3场轮换/阵型波动更大，进攻 λ 被下调",
             "supports": "偏低比分或主队进球不及纸面"
+          },
+          {
+            "factor": "1X2 对齐",
+            "detail": "主推比分与胜负推荐「客胜」一致",
+            "supports": "0-1"
           }
         ],
         "total_goals_tendency": "中等进球",
-        "total_xg": 2.59
+        "total_xg": 2.65
       },
       "team_analysis": {
         "home": {
           "team_id": "england",
           "display": "🏴英格兰",
-          "elo": 1940,
+          "elo": 1962,
           "coach": "Thomas Tuchel",
           "coach_style": "高位压迫",
           "coach_tags": [
@@ -407,7 +454,8 @@
           "friendly_trend_summary": "图赫尔轮换6人，凯恩破门; 试用三中卫变体; 世预赛末轮主力出战",
           "strengths": [],
           "weaknesses": [
-            "近3场热身存在大面积轮换，竞技状态存疑"
+            "近3场热身存在大面积轮换，竞技状态存疑",
+            "伤病对即战力影响较大"
           ],
           "notes": [
             "FIFA 排名 #4",
@@ -415,10 +463,10 @@
             "平均年龄 26.5",
             "世预赛对本洲前三场均丢球 1.33（对强队防守偏弱）",
             "近3场热身阵型有调整，战术仍在磨合",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — L组尚未开赛，战意中性",
-            "出线路径：争夺小组前二（当前第2，0分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场",
+            "伤病/停赛：Livramento伤退；帕尔默落选；萨卡负荷管理",
+            "本场战意：正常抢分 — 3分排名第1",
+            "出线路径：争夺小组前二（当前第1，3分）",
+            "小组现状 3 分 净胜球 +2 已赛 1 场",
             "历史最好名次约第 4 名"
           ],
           "tournament_record": null
@@ -426,7 +474,7 @@
         "away": {
           "team_id": "croatia",
           "display": "🇭🇷克罗地亚",
-          "elo": 1840,
+          "elo": 1818,
           "coach": "Zlatko Dalić",
           "coach_style": "hybrid",
           "coach_tags": [
@@ -455,16 +503,40 @@
             "阵容身价约 €350m",
             "平均年龄 30.0",
             "世预赛对本洲前三场均丢球 0.67（防守韧劲强）",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — L组尚未开赛，战意中性",
-            "出线路径：争夺小组前二（当前第1，0分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场",
+            "伤病/停赛：Ćaleta-Car背部伤存疑",
+            "本场战意：急需抢分 — 目前0分，剩余2场",
+            "出线路径：仍可能争前二（最高可达6分）",
+            "小组现状 0 分 净胜球 -2 已赛 1 场",
             "历史最好名次约第 2 名"
           ],
           "tournament_record": null
         }
       },
-      "prep_text": "同洲（UEFA）可比：england 对洲内前三场均丢球 1.33 (对强队防守偏弱)；croatia 对洲内前三场均丢球 0.67 (防守韧劲强)\n\n热身赛（忽略比分，只看趋势）：\nengland: 阵型有调整(4-2-3-1, 4-3-3, 4-2-3-1)；近3场存在大面积轮换；图赫尔轮换6人，凯恩破门; 试用三中卫变体; 世预赛末轮主力出战\ncroatia: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nengland: 揭幕阶段 — L组尚未开赛，战意中性\ncroatia: 揭幕阶段 — L组尚未开赛，战意中性\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。"
+      "prep_text": "同洲（UEFA）可比：england 对洲内前三场均丢球 1.33 (对强队防守偏弱)；croatia 对洲内前三场均丢球 0.67 (防守韧劲强)\n\n热身赛（忽略比分，只看趋势）：\nengland: 阵型有调整(4-2-3-1, 4-3-3, 4-2-3-1)；近3场存在大面积轮换；图赫尔轮换6人，凯恩破门; 试用三中卫变体; 世预赛末轮主力出战\ncroatia: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nengland: 正常抢分 — 3分排名第1\ncroatia: 急需抢分 — 目前0分，剩余2场\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。",
+      "actual": {
+        "score": "4-2",
+        "outcome_zh": "主胜",
+        "home_goals": 4,
+        "away_goals": 2,
+        "date": "2026-06-17"
+      },
+      "post_match": {
+        "hit_1x2": false,
+        "hit_score": false,
+        "model_pick": "客胜",
+        "model_score": "0-1",
+        "market_pick": "主胜",
+        "market_hit_1x2": true,
+        "insights": [
+          "模型错判客胜，实际英格兰 4-2 大胜，与庄家方向一致",
+          "平局概率被压至极低，错把势均力敌判成克罗地亚占优",
+          "图赫尔轮换担忧未兑现，凯恩与贝林厄姆主导进攻"
+        ],
+        "elo_after": {
+          "home": 1962,
+          "away": 1818
+        }
+      }
     },
     {
       "id": 3,
@@ -484,40 +556,42 @@
         "away": 0.2768
       },
       "market_pick_zh": "主胜",
-      "alignment": "high",
+      "alignment": "split",
+      "draw_pick_applied": false,
+      "draw_pick_rule": null,
       "recommendation": {
-        "pick_1x2": "主胜",
-        "pick_1x2_prob": 0.4524,
-        "pick_score": "1-0",
-        "pick_score_prob": 0.121777,
-        "summary": "主推 主胜（45.2%），比分 1-0（Poisson 12.2%）；中等进球（xG合计 2.58）"
+        "pick_1x2": "客胜",
+        "pick_1x2_prob": 0.3752,
+        "pick_score": "0-1",
+        "pick_score_prob": 0.074478,
+        "summary": "推荐 客胜（37.5%），比分 0-1（进球模型 7.4%）；中等进球（预期进球合计 2.64）"
       },
       "result_analysis": {
         "probabilities": {
-          "home_win": 0.4524,
-          "draw": 0.2227,
-          "away_win": 0.3248
+          "home_win": 0.3675,
+          "draw": 0.2573,
+          "away_win": 0.3752
         },
-        "pick": "主胜",
-        "pick_key": "home",
+        "pick": "客胜",
+        "pick_key": "away",
         "ranked_outcomes": [
           {
-            "outcome": "主胜",
-            "prob": 0.4524
+            "outcome": "客胜",
+            "prob": 0.3752
           },
           {
-            "outcome": "客胜",
-            "prob": 0.3248
+            "outcome": "主胜",
+            "prob": 0.3675
           },
           {
             "outcome": "平局",
-            "prob": 0.2227
+            "prob": 0.2573
           }
         ],
         "reasons": [
           {
             "factor": "Elo 纸面",
-            "detail": "Elo 差 +120，略倾向主队",
+            "detail": "Elo 差 +160，略倾向主队",
             "weight": "中",
             "favors": "home"
           },
@@ -529,10 +603,10 @@
           }
         ],
         "feature_snapshot": {
-          "elo_diff": 120.0,
+          "elo_diff": 160.0,
           "attack_diff": 0.36,
           "defense_diff": -0.36,
-          "injury_impact": 0.0,
+          "injury_impact": -0.05,
           "fatigue_index": 0.0,
           "market_implied_prob": 0.33,
           "tournament_stage": 0.5,
@@ -543,24 +617,24 @@
         }
       },
       "score_analysis": {
-        "primary_score": "1-0",
-        "primary_prob": 0.121777,
+        "primary_score": "0-1",
+        "primary_prob": 0.074478,
         "expected_goals": {
-          "home": 1.6119,
-          "away": 0.9711
+          "home": 1.7488,
+          "away": 0.8951
         },
         "xg_baseline_vs_adjusted": {
           "baseline": {
-            "home": 1.598,
-            "away": 0.98
+            "home": 1.733,
+            "away": 0.903
           },
           "adjusted": {
-            "home": 1.612,
-            "away": 0.971
+            "home": 1.749,
+            "away": 0.895
           },
           "delta": {
-            "home": 0.014,
-            "away": -0.009
+            "home": 0.015,
+            "away": -0.008
           }
         },
         "prep_impact_summary": [
@@ -568,46 +642,56 @@
         ],
         "top_scorelines": [
           {
-            "score": "1-0",
-            "prob": 0.121777
+            "score": "0-1",
+            "prob": 0.074478
           },
           {
-            "score": "1-1",
-            "prob": 0.11826
+            "score": "1-0",
+            "prob": 0.127107
           },
           {
             "score": "2-0",
-            "prob": 0.098148
-          },
-          {
-            "score": "2-1",
-            "prob": 0.095313
+            "prob": 0.098812
           },
           {
             "score": "0-0",
-            "prob": 0.075547
+            "prob": 0.098102
+          },
+          {
+            "score": "1-1",
+            "prob": 0.096498
           }
         ],
         "score_reasons": [
           {
+            "factor": "实力差",
+            "detail": "🇬🇭加纳 Elo 领先 160 分，Poisson 倾向其进球更多、对手进球更少",
+            "supports": "0-1"
+          },
+          {
             "factor": "世预赛防守",
             "detail": "主队对本洲前三场均丢球更少，模型压低客队 λ、略抬主队 λ",
-            "supports": "1-0（主队零封或一球差概率上升）"
+            "supports": "0-1（主队零封或一球差概率上升）"
           },
           {
             "factor": "平局概率",
-            "detail": "v4 平局概率 22.3%，Poisson 矩阵中平局比分合计权重不可忽视",
-            "supports": "1-1"
+            "detail": "v4 平局概率 25.7%，Poisson 矩阵中平局比分合计权重不可忽视",
+            "supports": "0-0"
+          },
+          {
+            "factor": "1X2 对齐",
+            "detail": "主推比分与胜负推荐「客胜」一致",
+            "supports": "0-1"
           }
         ],
         "total_goals_tendency": "中等进球",
-        "total_xg": 2.58
+        "total_xg": 2.64
       },
       "team_analysis": {
         "home": {
           "team_id": "ghana",
           "display": "🇬🇭加纳",
-          "elo": 1590,
+          "elo": 1610,
           "coach": "Otto Addo",
           "coach_style": "直接打法",
           "coach_tags": [
@@ -635,10 +719,10 @@
             "阵容身价约 €130m",
             "平均年龄 26.5",
             "世预赛对本洲前三场均丢球 1.33（对强队防守偏弱）",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — L组尚未开赛，战意中性",
-            "出线路径：仍可能争前二（最高可达9分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场",
+            "伤病/停赛：Opoku轻伤评估",
+            "本场战意：争小组头名 — 赢球可并列/反超榜首",
+            "出线路径：争夺小组前二（当前第2，3分）",
+            "小组现状 3 分 净胜球 +1 已赛 1 场",
             "历史最好名次约第 9 名"
           ],
           "tournament_record": null
@@ -646,7 +730,7 @@
         "away": {
           "team_id": "panama",
           "display": "🇵🇦巴拿马",
-          "elo": 1470,
+          "elo": 1450,
           "coach": "Thomas Christiansen",
           "coach_style": "反击",
           "coach_tags": [
@@ -676,16 +760,39 @@
             "阵容身价约 €35m",
             "平均年龄 28.0",
             "世预赛对本洲前三场均丢球 2.0（对强队防守偏弱）",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — L组尚未开赛，战意中性",
-            "出线路径：仍可能争前二（最高可达9分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场",
+            "伤病/停赛：阵容齐整",
+            "本场战意：急需抢分 — 目前0分，剩余2场",
+            "出线路径：仍可能争前二（最高可达6分）",
+            "小组现状 0 分 净胜球 -1 已赛 1 场",
             "历史最好名次约第 9 名"
           ],
           "tournament_record": null
         }
       },
-      "prep_text": "⚠️ 跨洲对决（CAF vs CONCACAF）：禁止对比世预赛场均进球。\n防守韧劲 — ghana: 对CAF前三场均丢球 1.33 (对强队防守偏弱)\n防守韧劲 — panama: 对CONCACAF前三场均丢球 2.0 (对强队防守偏弱)\n\n热身赛（忽略比分，只看趋势）：\nghana: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\npanama: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nghana: 揭幕阶段 — L组尚未开赛，战意中性\npanama: 揭幕阶段 — L组尚未开赛，战意中性\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。"
+      "prep_text": "⚠️ 跨洲对决（CAF vs CONCACAF）：禁止对比世预赛场均进球。\n防守韧劲 — ghana: 对CAF前三场均丢球 1.33 (对强队防守偏弱)\n防守韧劲 — panama: 对CONCACAF前三场均丢球 2.0 (对强队防守偏弱)\n\n热身赛（忽略比分，只看趋势）：\nghana: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\npanama: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nghana: 争小组头名 — 赢球可并列/反超榜首\npanama: 急需抢分 — 目前0分，剩余2场\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。",
+      "actual": {
+        "score": "1-0",
+        "outcome_zh": "主胜",
+        "home_goals": 1,
+        "away_goals": 0,
+        "date": "2026-06-17"
+      },
+      "post_match": {
+        "hit_1x2": false,
+        "hit_score": false,
+        "model_pick": "客胜",
+        "model_score": "0-1",
+        "market_pick": "主胜",
+        "market_hit_1x2": true,
+        "insights": [
+          "推荐主胜且比分 1-0，胜负与比分双双命中",
+          "模型与庄家方向一致，本场表现最佳"
+        ],
+        "elo_after": {
+          "home": 1610,
+          "away": 1450
+        }
+      }
     },
     {
       "id": 4,
@@ -706,53 +813,49 @@
       },
       "market_pick_zh": "客胜",
       "alignment": "high",
+      "draw_pick_applied": false,
+      "draw_pick_rule": null,
       "recommendation": {
         "pick_1x2": "客胜",
-        "pick_1x2_prob": 0.5898,
-        "pick_score": "0-2",
-        "pick_score_prob": 0.135962,
-        "summary": "主推 客胜（59.0%），比分 0-2（Poisson 13.6%）；偏大球（xG合计 3.11）"
+        "pick_1x2_prob": 0.5319,
+        "pick_score": "1-3",
+        "pick_score_prob": 0.044467,
+        "summary": "推荐 客胜（53.2%），比分 1-3（进球模型 4.4%）；偏大球（预期进球合计 3.17）"
       },
       "result_analysis": {
         "probabilities": {
-          "home_win": 0.3195,
-          "draw": 0.0907,
-          "away_win": 0.5898
+          "home_win": 0.2881,
+          "draw": 0.18,
+          "away_win": 0.5319
         },
         "pick": "客胜",
         "pick_key": "away",
         "ranked_outcomes": [
           {
             "outcome": "客胜",
-            "prob": 0.5898
+            "prob": 0.5319
           },
           {
             "outcome": "主胜",
-            "prob": 0.3195
+            "prob": 0.2881
           },
           {
             "outcome": "平局",
-            "prob": 0.0907
+            "prob": 0.18
           }
         ],
         "reasons": [
           {
             "factor": "Elo 纸面",
-            "detail": "🇨🇴哥伦比亚 领先 330 分，历史赛果统计上明显占优",
+            "detail": "🇨🇴哥伦比亚 领先 346 分，历史赛果统计上明显占优",
             "weight": "高",
             "favors": "away"
-          },
-          {
-            "factor": "模型局限",
-            "detail": "v4 平局概率仅 9.1%，若双方保守僵持，实际赛果可能偏离主推",
-            "weight": "风险提示",
-            "favors": "draw"
           }
         ],
         "feature_snapshot": {
-          "elo_diff": -330.0,
-          "attack_diff": -1.0525,
-          "defense_diff": 1.0525,
+          "elo_diff": -346.0,
+          "attack_diff": -1.0725,
+          "defense_diff": 1.0725,
           "injury_impact": 0.0,
           "fatigue_index": 0.0,
           "market_implied_prob": 0.33,
@@ -764,20 +867,20 @@
         }
       },
       "score_analysis": {
-        "primary_score": "0-2",
-        "primary_prob": 0.135962,
+        "primary_score": "1-3",
+        "primary_prob": 0.044467,
         "expected_goals": {
-          "home": 0.6425,
-          "away": 2.4661
+          "home": 0.6218,
+          "away": 2.5478
         },
         "xg_baseline_vs_adjusted": {
           "baseline": {
-            "home": 0.642,
-            "away": 2.466
+            "home": 0.622,
+            "away": 2.548
           },
           "adjusted": {
-            "home": 0.642,
-            "away": 2.466
+            "home": 0.622,
+            "away": 2.548
           },
           "delta": {
             "home": 0.0,
@@ -789,41 +892,46 @@
         ],
         "top_scorelines": [
           {
-            "score": "0-2",
-            "prob": 0.135962
-          },
-          {
-            "score": "0-3",
-            "prob": 0.111764
+            "score": "1-3",
+            "prob": 0.044467
           },
           {
             "score": "0-1",
-            "prob": 0.110267
+            "prob": 0.126651
           },
           {
-            "score": "1-2",
-            "prob": 0.087349
+            "score": "0-2",
+            "prob": 0.114645
           },
           {
-            "score": "1-3",
-            "prob": 0.071803
+            "score": "0-0",
+            "prob": 0.094943
+          },
+          {
+            "score": "0-3",
+            "prob": 0.08739
           }
         ],
         "score_reasons": [
           {
             "factor": "实力差",
-            "detail": "🇨🇴哥伦比亚 Elo 领先 330 分，Poisson 倾向其进球更多、对手进球更少",
-            "supports": "0-2"
+            "detail": "🇨🇴哥伦比亚 Elo 领先 346 分，Poisson 倾向其进球更多、对手进球更少",
+            "supports": "1-3"
+          },
+          {
+            "factor": "1X2 对齐",
+            "detail": "主推比分与胜负推荐「客胜」一致",
+            "supports": "1-3"
           }
         ],
         "total_goals_tendency": "偏大球",
-        "total_xg": 3.11
+        "total_xg": 3.17
       },
       "team_analysis": {
         "home": {
           "team_id": "uzbekistan",
           "display": "🇺🇿乌兹别克斯坦",
-          "elo": 1490,
+          "elo": 1482,
           "coach": "Srečko Katanec",
           "coach_style": "防守反击",
           "coach_tags": [
@@ -851,17 +959,17 @@
             "阵容身价约 €40m",
             "平均年龄 26.5",
             "世预赛对本洲前三场均丢球 1.0（防守中等）",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — K组尚未开赛，战意中性",
-            "出线路径：仍可能争前二（最高可达9分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场"
+            "伤病/停赛：首秀阵容齐整",
+            "本场战意：急需抢分 — 目前0分，剩余2场",
+            "出线路径：仍可能争前二（最高可达6分）",
+            "小组现状 0 分 净胜球 -2 已赛 1 场"
           ],
           "tournament_record": null
         },
         "away": {
           "team_id": "colombia",
           "display": "🇨🇴哥伦比亚",
-          "elo": 1820,
+          "elo": 1828,
           "coach": "Néstor Lorenzo",
           "coach_style": "反击",
           "coach_tags": [
@@ -889,16 +997,50 @@
             "阵容身价约 €320m",
             "平均年龄 28.0",
             "世预赛对本洲前三场均丢球 1.0（防守中等）",
-            "伤病/停赛：暂无伤病情报，预测前须 WebSearch 更新",
-            "本场战意：揭幕阶段 — K组尚未开赛，战意中性",
-            "出线路径：争夺小组前二（当前第1，0分）",
-            "小组现状 0 分 净胜球 +0 已赛 0 场",
+            "伤病/停赛：阵容齐整",
+            "本场战意：正常抢分 — 3分排名第1",
+            "出线路径：争夺小组前二（当前第1，3分）",
+            "小组现状 3 分 净胜球 +2 已赛 1 场",
             "历史最好名次约第 6 名"
           ],
           "tournament_record": null
         }
       },
-      "prep_text": "⚠️ 跨洲对决（AFC vs CONMEBOL）：禁止对比世预赛场均进球。\n防守韧劲 — uzbekistan: 对AFC前三场均丢球 1.0 (防守中等)\n防守韧劲 — colombia: 对CONMEBOL前三场均丢球 1.0 (防守中等)\n\n热身赛（忽略比分，只看趋势）：\nuzbekistan: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\ncolombia: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nuzbekistan: 揭幕阶段 — K组尚未开赛，战意中性\ncolombia: 揭幕阶段 — K组尚未开赛，战意中性\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。"
+      "prep_text": "⚠️ 跨洲对决（AFC vs CONMEBOL）：禁止对比世预赛场均进球。\n防守韧劲 — uzbekistan: 对AFC前三场均丢球 1.0 (防守中等)\n防守韧劲 — colombia: 对CONMEBOL前三场均丢球 1.0 (防守中等)\n\n热身赛（忽略比分，只看趋势）：\nuzbekistan: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\ncolombia: 阵型稳定(4-3-3)；公开热身资料有限，预测前建议补充检索\n\n【第一加权因子 · 本场实时战意】\nuzbekistan: 急需抢分 — 目前0分，剩余2场\ncolombia: 正常抢分 — 3分排名第1\n无论世预赛/热身赛历史多么悬殊，本场比赛实时利益诉求（打平出线 vs 必须大胜）为第一加权因子，修正最终比分推演。",
+      "actual": {
+        "score": "1-3",
+        "outcome_zh": "客胜",
+        "home_goals": 1,
+        "away_goals": 3,
+        "date": "2026-06-17"
+      },
+      "post_match": {
+        "hit_1x2": true,
+        "hit_score": true,
+        "model_pick": "客胜",
+        "model_score": "1-3",
+        "market_pick": "客胜",
+        "market_hit_1x2": true,
+        "insights": [
+          "客胜方向命中，实际 1-3 对比推荐 0-2 差一球",
+          "哥伦比亚定位球与迪亚斯个人能力超出纸面预期"
+        ],
+        "elo_after": {
+          "home": 1482,
+          "away": 1828
+        }
+      }
     }
-  ]
+  ],
+  "results_summary": {
+    "n": 4,
+    "hit_1x2": 1,
+    "hit_score": 1,
+    "note": "K/L 组 6/18 四场赛后复盘（当前模型推荐对照实际赛果）"
+  },
+  "md1_total": {
+    "matches_played": 24,
+    "md1_backtest_1x2": "21/24",
+    "md1_backtest_score": "10/24"
+  }
 }
