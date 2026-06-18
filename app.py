@@ -21,6 +21,35 @@ def pct(value: float) -> str:
     return f"{value * 100:.1f}%"
 
 
+def match_date_label(match: dict) -> str:
+    """下拉选项：以开球日期时间为主标签。"""
+    return match["kickoff"]
+
+
+def match_lookup(data: dict) -> dict[str, dict]:
+    return {match_date_label(m): m for m in data["matches"]}
+
+
+def _apply_bar_chart_layout(
+    fig: go.Figure,
+    y_values: list[float],
+    *,
+    height: int = 300,
+    top_margin: int = 55,
+    y_pad: float = 0.35,
+) -> go.Figure:
+    ymax = max(y_values) if y_values else 0.1
+    fig.update_layout(
+        height=height,
+        margin=dict(l=20, r=20, t=top_margin, b=20),
+        yaxis=dict(range=[0, ymax * (1 + y_pad)]),
+        uniformtext_minsize=8,
+        uniformtext_mode="hide",
+    )
+    fig.update_traces(cliponaxis=False, textposition="outside")
+    return fig
+
+
 def prob_comparison_figure(match: dict) -> go.Figure:
     model = match["result_analysis"]["probabilities"]
     market = match["market_implied"]
@@ -33,10 +62,10 @@ def prob_comparison_figure(match: dict) -> go.Figure:
     fig.add_bar(name="市场隐含", x=labels, y=market_vals, marker_color="#3b82f6", opacity=0.75)
     fig.update_layout(
         barmode="group",
-        height=320,
-        margin=dict(l=20, r=20, t=30, b=20),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        yaxis=dict(tickformat=".0%", title="概率"),
+        height=340,
+        margin=dict(l=20, r=20, t=70, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.12, xanchor="center", x=0.5),
+        yaxis=dict(tickformat=".0%", title="概率", range=[0, max(model_vals + market_vals) * 1.15]),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
     )
@@ -53,16 +82,15 @@ def scorelines_figure(match: dict) -> go.Figure:
         marker_color=colors,
         text=[pct(p) for p in df["prob"]],
         textposition="outside",
+        cliponaxis=False,
     ))
     fig.update_layout(
-        height=300,
-        margin=dict(l=20, r=20, t=30, b=20),
         yaxis=dict(tickformat=".0%", title="Poisson 概率"),
         xaxis_title="比分",
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
     )
-    return fig
+    return _apply_bar_chart_layout(fig, df["prob"].tolist(), height=340, top_margin=60)
 
 
 def xg_figure(match: dict) -> go.Figure:
@@ -75,15 +103,14 @@ def xg_figure(match: dict) -> go.Figure:
         marker_color=["#22c55e", "#60a5fa"],
         text=[f"{home:.2f}", f"{away:.2f}"],
         textposition="outside",
+        cliponaxis=False,
     ))
     fig.update_layout(
-        height=260,
-        margin=dict(l=20, r=20, t=30, b=20),
         yaxis_title="期望进球 xG",
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
     )
-    return fig
+    return _apply_bar_chart_layout(fig, [home, away], height=300, top_margin=55)
 
 
 def render_overview(data: dict) -> None:
@@ -91,8 +118,8 @@ def render_overview(data: dict) -> None:
     for m in data["matches"]:
         rec = m["recommendation"]
         rows.append({
-            "比赛": m["title"],
             "开球": m["kickoff"],
+            "比赛": m["title"],
             "模型": f"{rec['pick_1x2']} · {rec['pick_score']}",
             "市场": m["market_pick_zh"],
             "一致": "✓" if m["alignment"] == "high" else "≠",
@@ -168,20 +195,23 @@ def main() -> None:
     st.title("2026 世界杯 · 小组赛 MD1 预测看板")
     st.markdown(f"**{data['model']}** · 生成日期 {data['generated']}")
 
-    titles = [m["title"] for m in data["matches"]]
+    date_labels = [match_date_label(m) for m in data["matches"]]
+    by_date = match_lookup(data)
     view = st.sidebar.radio("视图", ["总览", "单场详情"], index=0)
-    selected = st.sidebar.selectbox("选择比赛", titles, index=0)
+    selected_date = st.sidebar.selectbox("选择比赛", date_labels, index=0)
+    selected_match = by_date[selected_date]
 
     if view == "总览":
         render_overview(data)
         st.divider()
         for m in data["matches"]:
-            with st.expander(m["title"], expanded=m["title"] == selected):
+            expander_label = f"{match_date_label(m)} · {m['title']}"
+            with st.expander(expander_label, expanded=match_date_label(m) == selected_date):
                 render_match(m)
     else:
-        match = next(m for m in data["matches"] if m["title"] == selected)
-        st.header(match["title"])
-        render_match(match)
+        st.header(selected_match["title"])
+        st.caption(f"开球时间 {selected_date}")
+        render_match(selected_match)
 
     st.sidebar.divider()
     st.sidebar.caption("数据仅供研究参考，不构成投注建议。")
