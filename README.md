@@ -1,6 +1,6 @@
 # WC2026 · 实时预测看板（每天更新）
 
-Streamlit 交互看板，展示 2026 世界杯小组赛 MD1 四场预测（模型 v4.4 + Poisson）。
+Streamlit 交互看板，展示 2026 世界杯预测（模型 v4.4 + Poisson）。
 
 ## 发布到 Streamlit Cloud（GitHub）
 
